@@ -20,12 +20,14 @@ pip install -r requirements.txt
 To faciliate the training of the models, we first turn all of the binary files to numpy format and save into one directory:
 
 ```
-python process_adc_bin2np.py
-    --raw_data radar_bin/
-    --output radar_numpy/
+python process_adc_bin2np.py --raw_data radar_bin/ --output radar_numpy/
 ```
 
-You will need to split the dataset `radar_numpy` into `radar_numpy_train` and `radar_numpy_test` 
+To split the dataset `radar_numpy` into `radar_numpy_train` and `radar_numpy_test` 
+
+```
+python split_train_val.py
+```
 
 ### Train and validation
 
