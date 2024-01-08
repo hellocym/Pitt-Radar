@@ -30,7 +30,7 @@ numLoopsPerFrame = 128
 numChirpsPerFrame = numTxAntennas * numLoopsPerFrame
 num_angle_bins = 128
 
-numADCSamples = 256
+# numADCSamples = 256
 num_angle_bins = 256
 
 
@@ -67,8 +67,8 @@ dca = DCA1000(static_ip='127.0.0.1',data_port=6666)
 files = os.listdir(args.raw_data)
 for i in range(len(files)):
     # print(i)
-    filename = args.raw_data+'{:06d}.bin'.format(i)
-    filename = args.raw_data+'frame_{:06d}.bin'.format(i)
+    filename = os.path.join(args.raw_data, '{:06d}.bin'.format(i))
+    # filename = args.raw_data+'frame_{:06d}.bin'.format(i)
     # adc_data = np.fromfile(fileName, dtype=np.uint16)
 
     adc_data = np.fromfile(filename, dtype=np.uint16)
