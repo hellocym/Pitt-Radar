@@ -1,3 +1,6 @@
 numpy
 tqdm
 pandas
+opencv-python
+openradar
+
