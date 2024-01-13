@@ -14,6 +14,7 @@ import pytorch_ssim
 from data_utils import TrainDatasetFromFolder_radar3D_adc, ValDatasetFromFolder_radar3D_adc, display_transform
 from loss import GeneratorLoss, GeneratorLoss_L1
 from model import Generator_radar3D, UNet_3D, Generator_radar3D_adc
+from model_mod import UNetPP_3D
 import util.helper as helper
 
 parser = argparse.ArgumentParser(description='Train Super Resolution Models')
@@ -134,7 +135,7 @@ if __name__ == '__main__':
     # netG = Generator_radar3D(UPSCALE_FACTOR)
     UPSCALE_FACTOR = opt.high_Azimuth/num_low_receiver
     netG = Generator_radar3D_adc(UPSCALE_FACTOR,input_dim=2)
-    netR = UNet_3D()
+    netR = UNetPP_3D()#UNet_3D()
     # netG = UNet_3D()
 
     if opt.model_g_name is not None:

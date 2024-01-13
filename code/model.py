@@ -37,6 +37,8 @@ class UNet_3D(nn.Module):
         self.conv_out = nn.Conv3d(16, 1, 1)
 
     def forward(self, x):
+        # x: [batch_size, 1, depth, height, width]
+        # out: [batch_size, 1, depth, height, width]
         enc1 = self.enc1(x)
         enc2 = self.enc2(self.pool(enc1))
         enc3 = self.enc3(self.pool(enc2))
