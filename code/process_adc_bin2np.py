@@ -6,7 +6,7 @@ import mmwave.dsp as dsp
 from mmwave.dataloader import DCA1000
 import matplotlib.pyplot as plt
 import argparse
-
+from tqdm import tqdm
 
 parser = argparse.ArgumentParser(description='Process the binary file to adc',
                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -23,14 +23,15 @@ if not os.path.exists(args.output):
 
 # range_list = range(step*args.ID,step*args.ID+step)
 
-numADCSamples = 128
+# numADCSamples = 128
+numADCSamples = 256
 numTxAntennas = 3
 numRxAntennas = 4
 numLoopsPerFrame = 128
 numChirpsPerFrame = numTxAntennas * numLoopsPerFrame
 num_angle_bins = 128
 
-# numADCSamples = 256
+
 num_angle_bins = 256
 
 
@@ -65,7 +66,9 @@ def RAD_map(range_plot):
     
 dca = DCA1000(static_ip='127.0.0.1',data_port=6666)
 files = os.listdir(args.raw_data)
-for i in range(len(files)):
+# add tqdm for progress bar
+for i in tqdm(range(len(files))):
+# for i in range(len(files)):
     # print(i)
     filename = os.path.join(args.raw_data, '{:06d}.bin'.format(i))
     # filename = args.raw_data+'frame_{:06d}.bin'.format(i)
