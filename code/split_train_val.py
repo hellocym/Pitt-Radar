@@ -20,6 +20,6 @@ random.shuffle(npys)
 
 for i in range(len(npys)):
     if i < len(npys) // 2:
-        os.symlink(os.path.join(npy_path, npys[i]), os.path.join(train_path, npys[i]))
+        os.symlink(os.path.join('..', npy_path, npys[i]), os.path.join(train_path, npys[i]))
     else:
-        os.symlink(os.path.join(npy_path, npys[i]), os.path.join(val_path, npys[i]))
+        os.symlink(os.path.join('..', npy_path, npys[i]), os.path.join(val_path, npys[i]))

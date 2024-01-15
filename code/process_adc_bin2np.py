@@ -23,8 +23,8 @@ if not os.path.exists(args.output):
 
 # range_list = range(step*args.ID,step*args.ID+step)
 
-# numADCSamples = 128
-numADCSamples = 256
+numADCSamples = 128
+# numADCSamples = 256
 numTxAntennas = 3
 numRxAntennas = 4
 numLoopsPerFrame = 128
