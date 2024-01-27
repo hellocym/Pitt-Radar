@@ -8,8 +8,8 @@ class GeneratorLoss(nn.Module):
         super(GeneratorLoss, self).__init__()
         # vgg = vgg16(pretrained=True)
         # loss_network = nn.Sequential(*list(vgg.features)[:31]).eval()
-        for param in loss_network.parameters():
-            param.requires_grad = False
+        # for param in loss_network.parameters():
+        #     param.requires_grad = False
         # self.loss_network = loss_network
         self.mse_loss = nn.MSELoss()
         self.tv_loss = TVLoss()
