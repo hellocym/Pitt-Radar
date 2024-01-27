@@ -240,53 +240,62 @@ class ViT_V_Net(nn.Module):
         self.leaky_relu4 = nn.LeakyReLU(inplace=True)
         self.conv5 = ConvBlock(512, 64, needs_pooling=False)
         self.leaky_relu5 = nn.LeakyReLU(inplace=True)
-        
-        self.convup1 = ConvUpBlock(96, 32, 48)
+
+        self.convup0 = ConvUpBlock(96, 32, 64)
+        self.convup1 = ConvUpBlock(64, 32, 48)
         self.convup2 = ConvUpBlock(48, 32, 32)
         self.convup3 = ConvUpBlock(32, 32, 32)
         self.convup4 = ConvUpBlock(32, 16, 16)
 
-        self.convout = nn.Conv3d(16, 3, kernel_size=3, padding=1, bias=False)
+        self.convout = nn.Conv3d(16, 1, kernel_size=3, padding=1, bias=False)
 
 
     def forward(self, x):
         down1 = self.conv1(x)
-        # print(down1.shape)
+        # print(f'down1: {down1.shape}')
         down2 = self.conv2(down1)
+        # print(f'down2: {down2.shape}')
         down3 = self.conv3(down2)
-        print(down3.shape)
+        # print(f'down3: {down3.shape}')
         x = self.ViT(down3) # [batch_size, num_patches, dim]
-        print(down3.shape)
+        # print(f'vit:{x.shape}') # [4, 126, 252]
         # reshape from [batch_size, num_patches, dim] to [batch_size, h, w, d]
         B, N, D = x.shape
-        # print(x.shape)
         h, w, d = (self.img_size[0]//2**self.down_factor//self.patch_size[0]), (self.img_size[1]//2**self.down_factor//self.patch_size[1]), (self.img_size[2]//2**self.down_factor//self.patch_size[2])
-        # print(h, w, d)
         x = x.permute(0, 2, 1)
-        # print(x.shape)
         x = x.contiguous().view(B, D, h, w, d)
+        # print(f'bottleneck: {x.shape}') # [4, 252, 4, 4, 8]
         x = self.conv4(x)
         x = self.leaky_relu4(x)
+        # print(f'conv4: {x.shape}') # [4, 512, 4, 4, 8]
         x = self.conv5(x)
         x = self.leaky_relu5(x)
-        # upsample x by 2
-        x = F.interpolate(x, scale_factor=2, mode='trilinear', align_corners=True)
-        print(down3.shape)
-        # downsample down3 by 4
-        down3_4 = F.interpolate(down3, scale_factor=0.25, mode='trilinear', align_corners=True)
-        x = torch.cat((x, down3_4), dim=1)
-        # downsample down3 by 2
-        down3_2 = F.interpolate(down3, scale_factor=0.5, mode='trilinear', align_corners=True)
+        # print(f'conv5: {x.shape}') # [4, 64, 4, 4, 8]
+        down3_8 = nn.MaxPool3d(8)(down3)
+        # print(f'down3_8: {down3_8.shape}') # [4, 32, 4, 4, 8]
+        x = torch.cat((x, down3_8), dim=1)
+        # print(f'conv5+skip: {x.shape}') # [4, 96, 4, 4, 8]
+        down3_4 = nn.MaxPool3d(4)(down3)
+        # print(f'down3_4: {down3_4.shape}') # [4, 32, 8, 8, 16]
+        x = self.convup0(x, down3_4)
+        # print(f'convup0: {x.shape}') # [4, 64, 8, 8, 16]
+        down3_2 = nn.MaxPool3d(2)(down3)
+        # print(f'down3_2: {down3_2.shape}') # [4, 32, 16, 16, 32]
         x = self.convup1(x, down3_2)
-        x = self.convup2(x, down3)
+        # print(f'convup1: {x.shape}') # [4, 48, 16, 16, 32]
+        x = self.convup2(x, down3) 
+        # print(f'convup2: {x.shape}') # [4, 32, 32, 32, 64]
         x = self.convup3(x, down2)
+        # print(f'convup3: {x.shape}') # [4, 32, 64, 64, 128]
         x = self.convup4(x, down1)
+        # print(f'convup4: {x.shape}') # [4, 16, 128, 128, 256]
         x = self.convout(x)
+        # [4, 1, 128, 128, 256]
         return x
         
 
 if __name__ == '__main__':
-    model = ViT_V_Net(image_size=(64, 64, 64), channels=2, patch_size=(8, 8, 8), emb_dropout=0.1)
-    x = torch.randn(2, 2, 64, 64, 64)
+    model = ViT_V_Net(image_size=(128, 128, 256), channels=1, patch_size=(8, 8, 8), emb_dropout=0.1)
+    x = torch.randn(4, 1, 128, 128, 256)
     out = model(x)
     print(out.shape)
