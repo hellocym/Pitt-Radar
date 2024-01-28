@@ -36,11 +36,7 @@ To train our pipeline of ADC-SR:
 
 
 ```
-python train_ADC_SR.py \
-    --output training_results/ADC_SR/ \
-    --train_data radar_numpy_train/ \
-    --val_data radar_numpy_test/ \
-    --model_name aaa.pth
+python train_ADC_SR.py --output training_results/ADC_SR/ --train_data radar_numpy_train/ --val_data radar_numpy_test/ --model_name aaa.pth --batch_size 4
 
 optional arguments:
 --low_Azimuth              <low resolution>
@@ -60,10 +56,7 @@ To train our pipeline of RAD-SR:
 
 
 ```
-python train_RAD_SR.py \
-    --output training_results/RAD_SR/ \
-    --train_data radar_numpy_train/ \
-    --val_data radar_numpy_test/ \
+python train_RAD_SR.py --output training_results/RAD_SR/ --train_data radar_numpy_train/ --val_data radar_numpy_test/ --model_name aaa.pth --batch_size 4
 
 optional arguments:
 --low_Azimuth              <low resolution>
@@ -84,10 +77,7 @@ To train our pipeline of Hybrid-SR:
 
 
 ```
-python train_Hybrid_SR.py \
-    --output training_results/Hybrid_SR/ \
-    --train_data radar_numpy_train/ \
-    --val_data radar_numpy_test/
+python train_Hybrid_SR.py --output training_results/Hybrid_SR/ --train_data radar_numpy_train/ --val_data radar_numpy_test/ --model_name aaa.pth --batch_size 4
 
 optional arguments:
 --low_Azimuth              <low resolution>
